@@ -6,13 +6,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/luthermonson/rewind-demo.git
+    repoURL: https://github.com/luthermonson/fargo-demo.git
     targetRevision: main          # switch to `broken` to trigger a rollback
     path: argo
   destination:
     name: k3s-beads               # the registered target cluster
     namespace: demo
   syncPolicy:
-    # Manual sync: you drive each rollout so rewind can bracket it.
+    # Manual sync: you drive each rollout so fargo can bracket it.
     syncOptions:
       - CreateNamespace=true

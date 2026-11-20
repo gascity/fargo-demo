@@ -1,7 +1,7 @@
 # Argo CD Application for the mirage-fork node-pool example. Manual sync only:
-# the rewind experiment drives syncs by hand (argocd app sync / setting the
+# the fargo experiment drives syncs by hand (argocd app sync / setting the
 # operation) so every rollout is one bracketed transaction. The PreSync hook
-# in apps/mirage-fork waits for rewind's savepoint before apply.
+# in apps/mirage-fork waits for fargo's savepoint before apply.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/luthermonson/rewind-demo.git
+    repoURL: https://github.com/luthermonson/fargo-demo.git
     targetRevision: main
     path: apps/mirage-fork
   destination:

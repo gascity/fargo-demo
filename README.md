@@ -1,6 +1,6 @@
-# rewind-demo
+# fargo-demo
 
-A tiny GitOps repo for demonstrating [rewind](https://github.com/luthermonson/rewind):
+A tiny GitOps repo for demonstrating [fargo](https://github.com/luthermonson/fargo):
 a transactional-deployment controller on a k3s-on-beads cluster. Both Argo CD
 and Flux can point at it.
 
@@ -10,7 +10,7 @@ and Flux can point at it.
 apps/podinfo/       podinfo Deployment (2 replicas), Service, ConfigMap, Namespace,
                     kustomization.yaml   — the app both tools deploy
 argo/               Application (manual sync, destination = the k3s target) +
-                    a kustomize overlay that adds the rewind PreSync hook
+                    a kustomize overlay that adds the fargo PreSync hook
 flux/               GitRepository + Kustomization (wait: true, timeout 2m,
                     healthChecks on the Deployment)
 ```
@@ -19,7 +19,7 @@ flux/               GitRepository + Kustomization (wait: true, timeout 2m,
 
 - **`main`** — the good image, `ghcr.io/stefanprodan/podinfo:6.17.0`.
 - **`broken`** — identical, but the image tag is `6.17.0-does-not-exist`, which
-  never pulls (`ImagePullBackOff`). This is the failing rollout rewind rolls
+  never pulls (`ImagePullBackOff`). This is the failing rollout fargo rolls
   back.
 
 Everything else (replica count, ports, probes) is the same on both branches, so
@@ -27,9 +27,9 @@ the only difference a rollout sees is the image.
 
 ## The demo flow
 
-rewind must be running in the matching mode and pointed at the cluster's kine
+fargo must be running in the matching mode and pointed at the cluster's kine
 (`--kine-endpoint`). The `/txn` control API has to be live in kine for the
-rollback to actually happen; until then, run rewind with `--dry-run` to watch it
+rollback to actually happen; until then, run fargo with `--dry-run` to watch it
 decide begin/commit/rollback without sending.
 
 ### 1. Good deploy (commit)
@@ -41,11 +41,11 @@ kubectl apply -f argo/application.yaml
 argocd app sync podinfo-demo        # or: kubectl -n argocd patch app ... (manual sync)
 ```
 
-rewind sees `operationState.phase=Running`, opens a transaction
+fargo sees `operationState.phase=Running`, opens a transaction
 (`argo/argocd/podinfo-demo/<revision>`), the PreSync hook waits until the
-savepoint exists, podinfo rolls out, goes `Healthy`, and rewind **commits**.
+savepoint exists, podinfo rolls out, goes `Healthy`, and fargo **commits**.
 Nothing visibly changed; the Application is annotated
-`rewind.gascity.dev/outcome: committed`.
+`fargo.gascity.dev/outcome: committed`.
 
 **Flux:** apply `flux/` and let it reconcile `main`.
 
@@ -53,7 +53,7 @@ Nothing visibly changed; the Application is annotated
 kubectl apply -f flux/
 ```
 
-rewind sees `Reconciling=True` with a new `lastAttemptedRevision`, begins, and
+fargo sees `Reconciling=True` with a new `lastAttemptedRevision`, begins, and
 **commits** when `Ready=True` and `lastAppliedRevision == lastAttemptedRevision`.
 
 ### 2. Failed deploy (rollback)
@@ -65,11 +65,11 @@ Point the source at `broken` and sync again:
 
 Now:
 
-1. rewind begins a transaction for the new revision.
+1. fargo begins a transaction for the new revision.
 2. podinfo's new pod can't pull `6.17.0-does-not-exist` → `ImagePullBackOff`.
 3. Argo reports the app `Degraded`; Flux reports `Ready=False`
    (HealthCheckFailed) after `timeout: 2m`.
-4. rewind **rolls back**: it emits the inverse of the in-scope changes as fresh
+4. fargo **rolls back**: it emits the inverse of the in-scope changes as fresh
    revisions, restoring the previous Deployment/ReplicaSet/Pods.
 
 Verify the rollback restored real state, not a re-reconcile:
@@ -90,9 +90,9 @@ the app's objects are reverted.
 ## Notes
 
 - The kine endpoint in `argo/presync-hook.yaml` (`http://192.168.5.2:2381`) and
-  in the Flux/rewind config must match your cluster's kine. Change it to suit.
+  in the Flux/fargo config must match your cluster's kine. Change it to suit.
 - `argo/` is synced by Argo (it includes the PreSync hook); Flux syncs
-  `apps/podinfo/` directly (Flux has no pre-apply hook — see the rewind README
+  `apps/podinfo/` directly (Flux has no pre-apply hook — see the fargo README
   for how that window is narrowed).
 
 MIT licensed.
@@ -102,8 +102,8 @@ MIT licensed.
 `apps/mirage-fork/` is a Cluster API cluster for the
 [mirage](https://github.com/luthermonson/cluster-api-provider-mirage) fake
 infrastructure provider: 3 control-plane machines and 5 MachineDeployments
-of 5 workers, plus the rewind PreSync hook (it reads the kine token from a
-Secret `rewind-kine-token` in the destination namespace; create that by hand).
+of 5 workers, plus the fargo PreSync hook (it reads the kine token from a
+Secret `fargo-kine-token` in the destination namespace; create that by hand).
 `argo/mirage-fork-application.yaml` is the manual-sync Application.
 
 Branches (only `apps/mirage-fork/` differs):
@@ -114,7 +114,7 @@ Branches (only `apps/mirage-fork/` differs):
   rig near its churn ceiling.
 - **`broken-10x10`** / **`broken-5x10`** — the same shape, but pool
   `mirage-fork-md-7` (`md-4` on 5x10) references a MirageMachineTemplate that
-  does not exist, so that pool never becomes healthy and rewind rolls the
+  does not exist, so that pool never becomes healthy and fargo rolls the
   whole sync back after its health deadline.
 - **`invalid-5x5`** — `main` with a MachineDeployment whose `replicas` is a
   string, so the sync fails at apply time (`operationState.phase=Failed`).

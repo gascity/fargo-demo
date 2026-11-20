@@ -4,4 +4,4 @@ metadata:
   name: podinfo-config
   namespace: demo
 data:
-  message: "rewind demo — good deploy on main"
+  message: "fargo demo — good deploy on main"

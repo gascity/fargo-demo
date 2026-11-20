@@ -9,7 +9,7 @@ spec:
   timeout: 2m
   sourceRef:
     kind: GitRepository
-    name: rewind-demo
+    name: fargo-demo
   path: ./apps/podinfo
   prune: true
   wait: true
