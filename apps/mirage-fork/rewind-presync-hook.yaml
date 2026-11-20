@@ -36,7 +36,7 @@ spec:
               set -eu
               echo "waiting for an open rewind transaction with prefix ${APP_PREFIX}"
               for i in $(seq 1 60); do
-                body="$(curl -fsS -H "Authorization: Bearer ${KINE_TOKEN}" "${KINE_ENDPOINT}/txn" || true)"
+                body="$(curl -fsS --connect-timeout 3 --max-time 5 -H "Authorization: Bearer ${KINE_TOKEN}" "${KINE_ENDPOINT}/txn" || true)"
                 if echo "$body" | tr '}' '\n' | grep "\"id\":\"${APP_PREFIX}" | grep -q '"state":"open"'; then
                   echo "savepoint is open; releasing sync"; exit 0
                 fi
