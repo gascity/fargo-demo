@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# The podinfo app plus the rewind PreSync hook. Argo syncs this directory, so
+# the broken image on the `broken` branch flows through the base automatically.
+resources:
+  - ../apps/podinfo
+  - presync-hook.yaml

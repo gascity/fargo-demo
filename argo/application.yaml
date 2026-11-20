@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-demo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/luthermonson/rewind-demo.git
+    targetRevision: main          # switch to `broken` to trigger a rollback
+    path: argo
+  destination:
+    name: k3s-beads               # the registered target cluster
+    namespace: demo
+  syncPolicy:
+    # Manual sync: you drive each rollout so rewind can bracket it.
+    syncOptions:
+      - CreateNamespace=true

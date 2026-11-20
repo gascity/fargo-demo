@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: podinfo-config
+  namespace: demo
+data:
+  message: "rewind demo — good deploy on main"

@@ -1,0 +1,45 @@
+# rewind PreSync hook for the demo Application. Blocks Argo's apply until
+# rewind has opened the transaction for this rollout, so apply can never start
+# before the savepoint. Mirrors examples/argo/presync-hook.yaml in the rewind
+# repo, with the Application's namespace/name filled in (argocd / podinfo-demo).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rewind-presync-podinfo
+  namespace: demo
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 120
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: wait-for-savepoint
+          image: curlimages/curl:8.11.1
+          env:
+            - name: KINE_ENDPOINT
+              value: "http://192.168.5.2:2381"
+            - name: APP_PREFIX
+              value: "argo/argocd/podinfo-demo/"
+            # Token-protected endpoint: mount the Secret and uncomment.
+            # - name: KINE_TOKEN
+            #   valueFrom:
+            #     secretKeyRef: { name: rewind-kine-token, key: token }
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              auth=""
+              [ -n "${KINE_TOKEN:-}" ] && auth="-H Authorization:\ Bearer\ ${KINE_TOKEN}"
+              echo "waiting for open rewind txn with prefix ${APP_PREFIX}"
+              for i in $(seq 1 60); do
+                body="$(curl -fsS $auth "${KINE_ENDPOINT}/txn" || true)"
+                echo "$body" | tr '}' '\n' | grep -q "\"id\":\"${APP_PREFIX}" \
+                  && echo "savepoint open; releasing sync" && exit 0
+                echo "  not yet ($i); sleeping 2s"; sleep 2
+              done
+              echo "timed out waiting for rewind savepoint" >&2; exit 1
