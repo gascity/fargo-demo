@@ -9,12 +9,14 @@ resources:
   - machinedeployment-mirage-fork-md-2.yaml
   - machinedeployment-mirage-fork-md-3.yaml
   - machinedeployment-mirage-fork-md-4.yaml
+  - machinedeployment-mirage-fork-md-5.yaml
   - miragecluster-mirage-fork.yaml
   - mirageconfigtemplate-mirage-fork-md-0.yaml
   - mirageconfigtemplate-mirage-fork-md-1.yaml
   - mirageconfigtemplate-mirage-fork-md-2.yaml
   - mirageconfigtemplate-mirage-fork-md-3.yaml
   - mirageconfigtemplate-mirage-fork-md-4.yaml
+  - mirageconfigtemplate-mirage-fork-md-5.yaml
   - miragecontrolplane-mirage-fork-cp.yaml
   - miragemachinetemplate-mirage-fork-cp.yaml
   - miragemachinetemplate-mirage-fork-md-0.yaml
