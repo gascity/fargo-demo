@@ -25,4 +25,4 @@ spec:
       infrastructureRef:
         apiGroup: infrastructure.cluster.x-k8s.io
         kind: MirageMachineTemplate
-        name: mirage-fork-md-4
+        name: mirage-fork-md-4-missing
