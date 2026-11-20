@@ -9,12 +9,22 @@ resources:
   - machinedeployment-mirage-fork-md-2.yaml
   - machinedeployment-mirage-fork-md-3.yaml
   - machinedeployment-mirage-fork-md-4.yaml
+  - machinedeployment-mirage-fork-md-5.yaml
+  - machinedeployment-mirage-fork-md-6.yaml
+  - machinedeployment-mirage-fork-md-7.yaml
+  - machinedeployment-mirage-fork-md-8.yaml
+  - machinedeployment-mirage-fork-md-9.yaml
   - miragecluster-mirage-fork.yaml
   - mirageconfigtemplate-mirage-fork-md-0.yaml
   - mirageconfigtemplate-mirage-fork-md-1.yaml
   - mirageconfigtemplate-mirage-fork-md-2.yaml
   - mirageconfigtemplate-mirage-fork-md-3.yaml
   - mirageconfigtemplate-mirage-fork-md-4.yaml
+  - mirageconfigtemplate-mirage-fork-md-5.yaml
+  - mirageconfigtemplate-mirage-fork-md-6.yaml
+  - mirageconfigtemplate-mirage-fork-md-7.yaml
+  - mirageconfigtemplate-mirage-fork-md-8.yaml
+  - mirageconfigtemplate-mirage-fork-md-9.yaml
   - miragecontrolplane-mirage-fork-cp.yaml
   - miragemachinetemplate-mirage-fork-cp.yaml
   - miragemachinetemplate-mirage-fork-md-0.yaml
@@ -22,3 +32,8 @@ resources:
   - miragemachinetemplate-mirage-fork-md-2.yaml
   - miragemachinetemplate-mirage-fork-md-3.yaml
   - miragemachinetemplate-mirage-fork-md-4.yaml
+  - miragemachinetemplate-mirage-fork-md-5.yaml
+  - miragemachinetemplate-mirage-fork-md-6.yaml
+  - miragemachinetemplate-mirage-fork-md-7.yaml
+  - miragemachinetemplate-mirage-fork-md-8.yaml
+  - miragemachinetemplate-mirage-fork-md-9.yaml
