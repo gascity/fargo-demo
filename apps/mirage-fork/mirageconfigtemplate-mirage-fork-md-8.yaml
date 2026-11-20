@@ -1,0 +1,9 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha1
+kind: MirageConfigTemplate
+metadata:
+  name: mirage-fork-md-8
+  namespace: default
+spec:
+  template:
+    spec:
+      extraData: role=worker

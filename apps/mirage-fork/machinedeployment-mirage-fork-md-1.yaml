@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   clusterName: mirage-fork
-  replicas: 5
+  replicas: 10
   selector:
     matchLabels:
       pool: md-1
