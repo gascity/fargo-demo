@@ -4,4 +4,4 @@ metadata:
   name: podinfo-config
   namespace: demo
 data:
-  message: "rewind demo — good deploy on main"
+  message: "rewind demo — BROKEN deploy (image does not exist)"
