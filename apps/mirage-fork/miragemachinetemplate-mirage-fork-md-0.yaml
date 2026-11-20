@@ -1,0 +1,11 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1
+kind: MirageMachineTemplate
+metadata:
+  name: mirage-fork-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      nodeCPU: "4"
+      nodeMemory: 8Gi
+      nodePods: "110"

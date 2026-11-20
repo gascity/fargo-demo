@@ -96,3 +96,25 @@ the app's objects are reverted.
   for how that window is narrowed).
 
 MIT licensed.
+
+## mirage-fork: the node-pool example (Cluster API + mirage)
+
+`apps/mirage-fork/` is a Cluster API cluster for the
+[mirage](https://github.com/luthermonson/cluster-api-provider-mirage) fake
+infrastructure provider: 3 control-plane machines and 5 MachineDeployments
+of 5 workers, plus the rewind PreSync hook (it reads the kine token from a
+Secret `rewind-kine-token` in the destination namespace; create that by hand).
+`argo/mirage-fork-application.yaml` is the manual-sync Application.
+
+Branches (only `apps/mirage-fork/` differs):
+
+- **`main`** — 5 pools x 5 workers (28 Nodes).
+- **`scale-10x10`** — 10 pools x 10 workers (103 Nodes): the committed scale-up.
+- **`scale-5x10`** — 5 pools x 10 workers (53 Nodes): the smaller scale-up for a
+  rig near its churn ceiling.
+- **`broken-10x10`** / **`broken-5x10`** — the same shape, but pool
+  `mirage-fork-md-7` (`md-4` on 5x10) references a MirageMachineTemplate that
+  does not exist, so that pool never becomes healthy and rewind rolls the
+  whole sync back after its health deadline.
+- **`invalid-5x5`** — `main` with a MachineDeployment whose `replicas` is a
+  string, so the sync fails at apply time (`operationState.phase=Failed`).

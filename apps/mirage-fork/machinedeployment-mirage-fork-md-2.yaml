@@ -1,0 +1,28 @@
+apiVersion: cluster.x-k8s.io/v1beta2
+kind: MachineDeployment
+metadata:
+  name: mirage-fork-md-2
+  namespace: default
+spec:
+  clusterName: mirage-fork
+  replicas: 5
+  selector:
+    matchLabels:
+      pool: md-2
+  template:
+    metadata:
+      labels:
+        pool: md-2
+        cluster.x-k8s.io/cluster-name: mirage-fork
+    spec:
+      clusterName: mirage-fork
+      version: v1.34.0
+      bootstrap:
+        configRef:
+          apiGroup: bootstrap.cluster.x-k8s.io
+          kind: MirageConfigTemplate
+          name: mirage-fork-md-2
+      infrastructureRef:
+        apiGroup: infrastructure.cluster.x-k8s.io
+        kind: MirageMachineTemplate
+        name: mirage-fork-md-2

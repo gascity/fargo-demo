@@ -1,0 +1,47 @@
+# rewind PreSync hook: blocks the Argo CD sync until rewind has opened the
+# kine transaction for this rollout, so apply never starts before the
+# savepoint. Adapted from github.com/luthermonson/rewind examples/argo.
+# The kine bearer token comes from the Secret rewind-kine-token in the
+# destination namespace (created by hand; never committed).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rewind-presync
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 120
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: wait-for-savepoint
+          image: curlimages/curl:8.11.1
+          env:
+            - name: KINE_ENDPOINT
+              value: "http://192.168.5.2:2381"
+            - name: APP_PREFIX
+              value: "argo/argocd/mirage-fork/"
+            - name: KINE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rewind-kine-token
+                  key: token
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              echo "waiting for an open rewind transaction with prefix ${APP_PREFIX}"
+              for i in $(seq 1 60); do
+                body="$(curl -fsS -H "Authorization: Bearer ${KINE_TOKEN}" "${KINE_ENDPOINT}/txn" || true)"
+                if echo "$body" | tr '}' '\n' | grep "\"id\":\"${APP_PREFIX}" | grep -q '"state":"open"'; then
+                  echo "savepoint is open; releasing sync"; exit 0
+                fi
+                echo "  not yet (attempt $i); sleeping 2s"
+                sleep 2
+              done
+              echo "timed out waiting for the rewind savepoint" >&2
+              exit 1

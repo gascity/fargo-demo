@@ -1,0 +1,17 @@
+apiVersion: cluster.x-k8s.io/v1beta2
+kind: Cluster
+metadata:
+  name: mirage-fork
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["192.168.0.0/16"]
+  controlPlaneRef:
+    apiGroup: controlplane.cluster.x-k8s.io
+    kind: MirageControlPlane
+    name: mirage-fork-cp
+  infrastructureRef:
+    apiGroup: infrastructure.cluster.x-k8s.io
+    kind: MirageCluster
+    name: mirage-fork

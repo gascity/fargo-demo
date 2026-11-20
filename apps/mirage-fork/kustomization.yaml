@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - rewind-presync-hook.yaml
+  - cluster-mirage-fork.yaml
+  - machinedeployment-mirage-fork-md-0.yaml
+  - machinedeployment-mirage-fork-md-1.yaml
+  - machinedeployment-mirage-fork-md-2.yaml
+  - machinedeployment-mirage-fork-md-3.yaml
+  - machinedeployment-mirage-fork-md-4.yaml
+  - miragecluster-mirage-fork.yaml
+  - mirageconfigtemplate-mirage-fork-md-0.yaml
+  - mirageconfigtemplate-mirage-fork-md-1.yaml
+  - mirageconfigtemplate-mirage-fork-md-2.yaml
+  - mirageconfigtemplate-mirage-fork-md-3.yaml
+  - mirageconfigtemplate-mirage-fork-md-4.yaml
+  - miragecontrolplane-mirage-fork-cp.yaml
+  - miragemachinetemplate-mirage-fork-cp.yaml
+  - miragemachinetemplate-mirage-fork-md-0.yaml
+  - miragemachinetemplate-mirage-fork-md-1.yaml
+  - miragemachinetemplate-mirage-fork-md-2.yaml
+  - miragemachinetemplate-mirage-fork-md-3.yaml
+  - miragemachinetemplate-mirage-fork-md-4.yaml
