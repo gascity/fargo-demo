@@ -1,3 +1,5 @@
+> **⚠️ Experimental — a Gas City research build.** Demo manifests for [`fargo`](https://github.com/gascity/fargo) on **k3s-on-beads**. Requires the [`gascity/kine` beads RC](https://github.com/gascity/kine/releases/tag/beads-v0.1.0-rc.1) running as the cluster's datastore. Not for production.
+
 # fargo-demo
 
 A tiny GitOps repo for demonstrating [fargo](https://github.com/luthermonson/fargo):
